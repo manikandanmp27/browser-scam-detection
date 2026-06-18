@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { DashboardStats, UrlScanResponse, ScamReportCreate, TopThreat } from '../types';
 
-const BACKEND_URL = 'http://localhost:8000';
+const BACKEND_URL = 'https://browser-scam-detection.onrender.com';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<'overview' | 'history' | 'lists' | 'report' | 'academy'>('overview');

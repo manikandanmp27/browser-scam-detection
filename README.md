@@ -68,70 +68,72 @@ browser-scam-detection/
 
 ---
 
-## Installation & Setup
+## Quick Start: Install & Run in 2 Minutes 🚀
 
-### 1. Backend Service (FastAPI)
+Since the extension is already configured to use the live cloud backend on Render (`https://browser-scam-detection.onrender.com`), you do **not** need to install or run Python/databases locally to use it!
 
-First, set up your Python environment and launch the FastAPI server.
+Follow these 3 simple steps to load the extension:
 
-#### Local Windows Setup:
+### Step 1: Clone the Repository
+Clone this repository to your local computer:
+```bash
+git clone https://github.com/manikandanmp27/browser-scam-detection.git
+cd browser-scam-detection
+```
+
+### Step 2: Build the Extension
+Build the frontend assets using Node.js:
+```bash
+cd frontend
+npm install
+npm run build
+```
+*This compiles the React/TypeScript files and creates a `dist/` directory inside the `frontend` folder.*
+
+### Step 3: Load the Extension in Your Browser
+1. Open Google Chrome (or Edge) and go to **`chrome://extensions/`** (or `edge://extensions/`).
+2. Toggle on **Developer Mode** in the top-right corner.
+3. Click the **Load unpacked** button in the top-left corner.
+4. Select the **`frontend/dist/`** directory.
+5. Pin **ScamShield AI** to your toolbar and start scanning! Open `scam_test.html` to see the warning in action.
+
+---
+
+## Developer Guide: Local Backend Setup 🛠️
+
+If you want to run the backend server locally on your machine (instead of the live Render cloud), follow these steps:
+
+### 1. Run the FastAPI Server Locally
 ```powershell
 # Navigate to backend directory
 cd backend
 
-# Create virtual environment (if not present)
+# Create and activate virtual environment
 python -m venv venv
-
-# Activate virtual environment
 .\venv\Scripts\activate
 
-# Install dependencies (automatically handles Windows binary wheels)
+# Install requirements
 pip install -r requirements.txt
 
-# Train the ML scam text classifier model
+# Pre-train the ML scam text classifier model
 python -m app.ml.train
 
-# Start the development API server (reloads on file changes)
+# Start the local API server (runs on port 8000)
 python -m uvicorn app.main:app --reload
 ```
-The backend API documentation will be available locally at [http://localhost:8000/docs](http://localhost:8000/docs).
+*The local API docs will be available at http://localhost:8000/docs.*
 
-*Note: Create a `.env` file in the `backend/` folder to configure VirusTotal (`VIRUSTOTAL_API_KEY`), Google Safe Browsing (`GOOGLE_SAFE_BROWSING_API_KEY`), or database URLs if running custom instances.*
-
----
-
-### 2. Frontend Browser Extension (React + Vite + TypeScript)
-
-Compile the React entrypoints and inject them unpacked into Chrome or Edge.
-
-#### Build Instructions:
-```powershell
-# Navigate to frontend folder
-cd frontend
-
-# Install Node modules
-npm install
-
-# Compile the TypeScript files and build the extension directory
-npm run build
-```
-Vite will compile the assets into the `frontend/dist/` directory.
-
-#### Load the Extension in Chrome/Edge:
-1. Open Google Chrome and navigate to `chrome://extensions/` (or Edge and navigate to `edge://extensions/`).
-2. Toggle **Developer Mode** (top right corner of the page) to active.
-3. Click the **Load unpacked** button (top left corner).
-4. Select the `dist/` directory generated inside the `frontend/` folder.
-5. Pin **ScamShield AI** to your toolbar!
+### 2. Connect the Extension to Local Backend
+1. Open `frontend/src/background.ts` and `frontend/src/dashboard/Dashboard.tsx`.
+2. Change the `BACKEND_URL` from the Render URL back to `'http://localhost:8000'`.
+3. Re-run `npm run build` in the `frontend` directory.
+4. Go to `chrome://extensions/` and click the **Reload (↻)** button on the ScamShield AI extension card.
 
 ---
 
-### 3. Docker Deployment (Backend API)
-
-Orchestrate the backend service inside a container mapping sqlite.
-
+### 3. Running with Docker
+You can also orchestrate the local backend using Docker Compose:
 ```bash
-# Spin up the FastAPI API container on port 8000
 docker-compose up --build -d
 ```
 

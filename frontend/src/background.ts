@@ -1,6 +1,6 @@
 import { UrlScanRequest, UrlScanResponse } from './types';
 
-const BACKEND_URL = 'http://localhost:8000';
+const BACKEND_URL = 'https://browser-scam-detection.onrender.com';
 const SCAN_ENDPOINT = `${BACKEND_URL}/api/v1/scan`;
 
 function updateBadge(tabId: number, category: string) {
@@ -101,7 +101,7 @@ async function scanTab(tabId: number, url: string) {
         domain: domainVal,
         risk_score: 0.0,
         category: 'Safe',
-        reasons: ['Scan failed. Ensure the ScamShield Backend (http://localhost:8000) is running.'],
+        reasons: ['Scan failed. Ensure the ScamShield Backend is running and reachable.'],
         details: {},
         scanned_at: new Date().toISOString()
       }
