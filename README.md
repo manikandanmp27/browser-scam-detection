@@ -24,6 +24,37 @@ It combines standard heuristic analysis, third-party security databases (VirusTo
 
 ---
 
+## Quick Start: Install & Run in 2 Minutes 🚀
+
+Since the extension is already configured to use the live cloud backend on Render (`https://browser-scam-detection.onrender.com`), you do **not** need to install or run Python/databases locally to use it!
+
+Follow these 3 simple steps to load the extension:
+
+### Step 1: Clone the Repository
+Clone this repository to your local computer:
+```bash
+git clone https://github.com/manikandanmp27/browser-scam-detection.git
+cd browser-scam-detection
+```
+
+### Step 2: Build the Extension
+Build the frontend assets using Node.js:
+```bash
+cd frontend
+npm install
+npm run build
+```
+*This compiles the React/TypeScript files and creates a `dist/` directory inside the `frontend` folder.*
+
+### Step 3: Load the Extension in Your Browser
+1. Open Google Chrome (or Edge) and go to **`chrome://extensions/`** (or `edge://extensions/`).
+2. Toggle on **Developer Mode** in the top-right corner.
+3. Click the **Load unpacked** button in the top-left corner.
+4. Select the **`frontend/dist/`** directory.
+5. Pin **ScamShield AI** to your toolbar and start scanning! Open `scam_test.html` to see the warning in action.
+
+---
+
 ## Directory Structure
 
 ```text
@@ -65,37 +96,6 @@ browser-scam-detection/
 ├── docker-compose.yml            # Local orchestration setup for backend
 └── README.md                     # GitHub manual documentation
 ```
-
----
-
-## Quick Start: Install & Run in 2 Minutes 🚀
-
-Since the extension is already configured to use the live cloud backend on Render (`https://browser-scam-detection.onrender.com`), you do **not** need to install or run Python/databases locally to use it!
-
-Follow these 3 simple steps to load the extension:
-
-### Step 1: Clone the Repository
-Clone this repository to your local computer:
-```bash
-git clone https://github.com/manikandanmp27/browser-scam-detection.git
-cd browser-scam-detection
-```
-
-### Step 2: Build the Extension
-Build the frontend assets using Node.js:
-```bash
-cd frontend
-npm install
-npm run build
-```
-*This compiles the React/TypeScript files and creates a `dist/` directory inside the `frontend` folder.*
-
-### Step 3: Load the Extension in Your Browser
-1. Open Google Chrome (or Edge) and go to **`chrome://extensions/`** (or `edge://extensions/`).
-2. Toggle on **Developer Mode** in the top-right corner.
-3. Click the **Load unpacked** button in the top-left corner.
-4. Select the **`frontend/dist/`** directory.
-5. Pin **ScamShield AI** to your toolbar and start scanning! Open `scam_test.html` to see the warning in action.
 
 ---
 
