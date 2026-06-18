@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/data:/workspace/data
+    environment:
+      - DATABASE_URL=sqlite:///./data/scam_detection.db
+      - VIRUSTOTAL_API_KEY=
+      - GOOGLE_SAFE_BROWSING_API_KEY=
+      - OPENAI_API_KEY=
+    restart: always
