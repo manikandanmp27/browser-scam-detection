@@ -1,0 +1,35 @@
+========================================================================
+                 SCAMSHIELD AI: HOW TO EXTRACT & RUN
+========================================================================
+
+Follow these 3 simple steps to extract and run the ScamShield AI browser extension.
+
+------------------------------------------------------------------------
+STEP 1: EXTRACTION
+------------------------------------------------------------------------
+1. Locate the file "scamshield-project.zip".
+2. Right-click on the zip file and select "Extract All..." (or use tools like 7-Zip / WinRAR).
+3. Extract the contents to a folder (e.g., "browser-scam-detection").
+
+------------------------------------------------------------------------
+STEP 2: LOAD THE EXTENSION IN YOUR BROWSER
+------------------------------------------------------------------------
+The extension is pre-built (inside the "frontend/dist" folder) and pre-configured to connect to the live cloud backend on Render (https://browser-scam-detection.onrender.com). No installation of Node.js or Python is required.
+
+1. Open Google Chrome (or Microsoft Edge).
+2. Go to the extensions management page:
+   - In Chrome, open a new tab and go to: chrome://extensions/
+   - In Edge, open a new tab and go to: edge://extensions/
+3. Enable "Developer Mode" (using the toggle switch in the top-right corner).
+4. Click the "Load unpacked" button in the top-left corner.
+5. Select the "dist" directory located inside the extracted project folder:
+   [extracted-folder]/frontend/dist/
+6. Pin "ScamShield AI" to your toolbar.
+
+------------------------------------------------------------------------
+STEP 3: TEST THE EXTENSION
+------------------------------------------------------------------------
+1. Open the file "scam_test.html" in your browser (it is located in the extracted folder root).
+2. Click the ScamShield AI icon in your toolbar to see the threat analysis popup.
+3. The extension badge will show "SCAM" (100/100 risk score) because the page triggers our scam keywords and credentials forms!
+========================================================================
