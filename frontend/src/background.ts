@@ -1,7 +1,9 @@
 import { UrlScanRequest, UrlScanResponse } from './types';
 
 const BACKEND_URL = 'https://browser-scam-detection.onrender.com';
+const LOCAL_BACKEND_URL = 'http://localhost:8000';
 const SCAN_ENDPOINT = `${BACKEND_URL}/api/v1/scan`;
+const LOCAL_SCAN_ENDPOINT = `${LOCAL_BACKEND_URL}/api/v1/scan`;
 
 function updateBadge(tabId: number, category: string) {
   let badgeText = '';
@@ -33,7 +35,7 @@ function updateBadge(tabId: number, category: string) {
 }
 
 async function scanTab(tabId: number, url: string) {
-  if (!url || (!url.startsWith('http://') && !url.startsWith('https://'))) {
+  if (!url || (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('file://'))) {
     return;
   }
 
@@ -58,14 +60,31 @@ async function scanTab(tabId: number, url: string) {
       scanPayload = { ...contentResponse.data, url }; // Ensure URL is correct
     }
 
-    // Call FastAPI backend
-    const response = await fetch(SCAN_ENDPOINT, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(scanPayload)
-    });
+    // Call FastAPI backend (Try Render cloud first; fallback to localhost if offline)
+    let response: Response;
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 7000);
+      response = await fetch(SCAN_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(scanPayload),
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      if (!response.ok) throw new Error(`Status ${response.status}`);
+    } catch (primaryErr) {
+      console.warn('[ScamShield] Cloud scan failed or timed out, trying local backend:', primaryErr);
+      response = await fetch(LOCAL_SCAN_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(scanPayload)
+      });
+    }
 
     if (!response.ok) {
       throw new Error(`Scam detection backend error: ${response.statusText}`);
@@ -92,7 +111,7 @@ async function scanTab(tabId: number, url: string) {
     // Store error state details in local storage so Popup shows it
     let domainVal = 'unknown';
     try {
-      domainVal = new URL(url).hostname;
+      domainVal = url.startsWith('file://') ? 'Local File' : new URL(url).hostname;
     } catch (_) {}
 
     await chrome.storage.local.set({
@@ -101,7 +120,7 @@ async function scanTab(tabId: number, url: string) {
         domain: domainVal,
         risk_score: 0.0,
         category: 'Safe',
-        reasons: ['Scan failed. Ensure the ScamShield Backend is running and reachable.'],
+        reasons: ['Scan failed. Ensure internet is connected or local backend is running.'],
         details: {},
         scanned_at: new Date().toISOString()
       }

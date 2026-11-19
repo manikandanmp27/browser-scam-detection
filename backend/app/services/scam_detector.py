@@ -85,6 +85,11 @@ def analyze_url(db: Session, request: UrlScanRequest) -> dict:
     registered_domain = extracted.domain  # e.g. "amaz0n"
     suffix = extracted.suffix  # e.g. "com"
     domain = f"{registered_domain}.{suffix}" if suffix else registered_domain
+    if not domain:
+        if url.startswith("file://"):
+            domain = "local-file"
+        else:
+            domain = "unknown"
     
     # Initialize threat factors
     reasons = []
@@ -271,20 +276,21 @@ def analyze_url(db: Session, request: UrlScanRequest) -> dict:
 
     # --- Feature 5: Advanced APIs (WHOIS, VT, GS) ---
     # 5a. WHOIS Age
-    whois_info = get_domain_age_days(domain)
-    if whois_info["age_days"] is not None:
-        details["whois_age_days"] = whois_info["age_days"]
-        if whois_info["age_days"] < 30:
-            risk_score += 35
-            reasons.append(f"Domain is very young (created {whois_info['age_days']} days ago).")
-        elif whois_info["age_days"] < 180:
-            risk_score += 15
-            reasons.append(f"Domain is relatively new (created {whois_info['age_days']} days ago).")
-    elif whois_info["error"] and "WHOIS error" in whois_info["error"]:
-        # If WHOIS error is 'no match' or 'not found', it might be unregistered/brand new
-        if "not found" in whois_info["error"].lower() or "no match" in whois_info["error"].lower():
-            risk_score += 20
-            reasons.append("WHOIS record is missing or not found (potential newly registered domain).")
+    if domain not in ("local-file", "unknown"):
+        whois_info = get_domain_age_days(domain)
+        if whois_info["age_days"] is not None:
+            details["whois_age_days"] = whois_info["age_days"]
+            if whois_info["age_days"] < 30:
+                risk_score += 35
+                reasons.append(f"Domain is very young (created {whois_info['age_days']} days ago).")
+            elif whois_info["age_days"] < 180:
+                risk_score += 15
+                reasons.append(f"Domain is relatively new (created {whois_info['age_days']} days ago).")
+        elif whois_info["error"] and "WHOIS error" in whois_info["error"]:
+            # If WHOIS error is 'no match' or 'not found', it might be unregistered/brand new
+            if "not found" in whois_info["error"].lower() or "no match" in whois_info["error"].lower():
+                risk_score += 20
+                reasons.append("WHOIS record is missing or not found (potential newly registered domain).")
 
     # 5b. VirusTotal
     vt_result = check_url_virustotal(url)

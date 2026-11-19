@@ -109,7 +109,7 @@ export default function Popup() {
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (score / 100) * circumference;
 
-  const isHttpOrHttps = activeTab.url?.startsWith('http://') || activeTab.url?.startsWith('https://');
+  const isScannableUrl = activeTab.url?.startsWith('http://') || activeTab.url?.startsWith('https://') || activeTab.url?.startsWith('file://');
 
   return (
     <div className="popup-container">
@@ -118,17 +118,17 @@ export default function Popup() {
           <Shield className="shield-icon-glowing" />
           <span className="logo-text">ScamShield <span className="logo-accent">AI</span></span>
         </div>
-        <button className="scan-refresh-btn" onClick={handleManualScan} disabled={loading || !isHttpOrHttps} title="Rescan Tab">
+        <button className="scan-refresh-btn" onClick={handleManualScan} disabled={loading || !isScannableUrl} title="Rescan Tab">
           <RefreshCw className={loading ? "spin-icon" : ""} />
         </button>
       </header>
 
       <main className="popup-content">
-        {!isHttpOrHttps && !loading ? (
+        {!isScannableUrl && !loading ? (
           <div className="unsupported-page">
             <AlertCircle className="unsupported-icon" />
             <p className="unsupported-title">Cannot Scan Page</p>
-            <p className="unsupported-desc">ScamShield only scans HTTP and HTTPS websites. Browser settings, extension stores, and empty pages are skipped.</p>
+            <p className="unsupported-desc">ScamShield only scans HTTP/HTTPS websites and local HTML test files. Browser internal pages and extension stores are skipped.</p>
           </div>
         ) : loading ? (
           <div className="loading-spinner-container">
@@ -169,7 +169,7 @@ export default function Popup() {
 
             {/* Tab Domain Info */}
             <div className="domain-label">
-              <span>Domain: <strong>{scanResult.domain}</strong></span>
+              <span>Domain: <strong>{scanResult.domain || (activeTab.url?.startsWith('file://') ? 'Local File' : 'unknown')}</strong></span>
             </div>
 
             {/* Reasons Scroll List */}

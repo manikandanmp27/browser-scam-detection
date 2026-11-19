@@ -1,0 +1,101 @@
+=============================================================
+             SCAMSHIELD AI - PROJECT PRESENTATION NOTES
+=============================================================
+
+1. PROJECT OVERVIEW (WHAT IS IT?)
+-------------------------------------------------------------
+ScamShield AI is an intelligent browser extension for Chrome & Edge
+that protects users from online scams, phishing pages, and fake
+websites in real time.
+
+Whenever a user visits a webpage, ScamShield analyzes the page and
+calculates a real-time Risk Score from 0 (Safe) to 100 (Dangerous).
+
+
+2. THE PROBLEM IT SOLVES
+-------------------------------------------------------------
+- Traditional security extensions rely on static blocklists that 
+  take days to update.
+- Attackers launch new scam websites in minutes and change domain 
+  names frequently.
+- Everyday users fall victim to deceptive brand names (e.g., amaz0n.com),
+  fake urgent countdowns, and credential-stealing popups.
+
+
+3. HOW IT WORKS (THE 4-LAYER DETECTION SYSTEM)
+-------------------------------------------------------------
+1. URL & Brand Impersonation Check:
+   - Uses "Levenshtein Distance" to catch typo domains (e.g., paypa1.com).
+   - Flags suspicious domain extensions (.xyz, .top, .cf).
+
+2. AI Text & Content Scanning:
+   - Uses an NLP Machine Learning model (TF-IDF + Logistic Regression).
+   - Scans page text for urgent scam phrases ("Congratulations you won!",
+     "Double your crypto", "Account suspended - verify now").
+
+3. DOM & Visual Behavior Analysis:
+   - Scans the webpage elements for fake urgency countdown timers,
+     aggressive overlays, and password/seed-phrase forms on untrusted sites.
+
+4. External Threat Intelligence & Domain Age:
+   - Checks WHOIS domain age (brand-new domains carry higher risk).
+   - Queries Google Safe Browsing and VirusTotal APIs for verified
+     malicious reports.
+
+
+4. TECH STACK & ARCHITECTURE
+-------------------------------------------------------------
+- Frontend: React + TypeScript (Chrome Extension Manifest V3)
+  * Clean dark cyber UI popup + DOM content scanner script.
+- Backend: FastAPI (Python 3)
+  * Coordinates heuristic scoring, ML text classification, and API lookups.
+  * Keeps third-party API keys secure on the server side.
+- Database: SQLite with SQLAlchemy ORM
+  * Stores scan history, whitelist rules, and community scam reports.
+
+
+5. QUICK DEMO FLOW (1-MINUTE DEMO FOR REVIEWERS)
+-------------------------------------------------------------
+- Step 1: Open a safe site (e.g., github.com)
+  -> Extension shows: Green Shield / Risk Score: 0 (Safe).
+- Step 2: Open "scam_test.html" (included test phishing page)
+  (Note: In chrome://extensions -> Details, enable "Allow access to file URLs")
+  -> Extension triggers: Red Alert / Risk Score: 92-100 (Scam Detected).
+  -> Explain why:
+     * Brand mismatch: "Metamask" in title, but not on metamask.io.
+     * Asks for sensitive wallet seed phrase.
+     * Fake countdown urgency timer.
+     * AI flags giveaway scam text.
+
+
+6. 30-SECOND SPOKEN PITCH (WHAT TO SAY DURING PRESENTATION)
+-------------------------------------------------------------
+"Good morning everyone. Today we are presenting ScamShield AI,
+a real-time browser security extension that protects users from
+modern phishing and online fraud.
+
+Instead of relying only on slow blocklists, ScamShield combines
+four intelligent layers: URL typosquatting detection, an NLP text
+classifier, DOM behavior scanning, and live threat intelligence.
+
+Built using React and TypeScript on the frontend with a high-speed
+Python FastAPI backend, ScamShield provides instant, transparent
+protection right inside the browser."
+
+
+7. TOP 3 QUESTIONS TO PREPARE FOR
+-------------------------------------------------------------
+Q1: Why use a backend server instead of putting everything in the extension?
+A: It keeps the extension lightweight, protects API keys from being
+   exposed, and lets us update the ML model without re-publishing.
+
+Q2: What is Levenshtein Distance?
+A: An algorithm that measures how many character changes are needed
+   to turn one word into another. It detects lookalike brand domains
+   like 'g00gle.com'.
+
+Q3: How do you prevent false positives on legitimate websites?
+A: Legitimate trusted domains are protected via a whitelist, and
+   risk scores are balanced across four independent layers rather than
+   triggering on a single clue.
+=============================================================

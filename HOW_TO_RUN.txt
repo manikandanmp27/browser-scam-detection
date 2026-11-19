@@ -25,6 +25,7 @@ The extension is pre-built (inside the "frontend/dist" folder) and pre-configure
 5. Select the "dist" directory located inside the extracted project folder:
    [extracted-folder]/frontend/dist/
 6. Pin "ScamShield AI" to your toolbar.
+7. (IMPORTANT FOR LOCAL FILES): On the ScamShield card in chrome://extensions, click "Details" and enable "Allow access to file URLs". (This allows the extension to read local test files like scam_test.html).
 
 ------------------------------------------------------------------------
 STEP 3: TEST THE EXTENSION
